@@ -1,0 +1,31 @@
+﻿@page
+@using Shoes_Shop.Models
+@model Shoes_Shop.Pages.Admin.ManageOrderModel
+@{
+    Layout = "./Shared/_Layout.cshtml";
+    dynamic orders = Model.Orders;
+}
+All order: 
+<table class="table table-striped">
+  <thead>
+      <tr>
+          <td>User name</td>
+          <td>Product</td>
+          <td>Date</td>
+          <td>Payment</td>
+          <td>Location</td>
+      </tr>
+  </thead>
+  <tbody>
+        @foreach(Order order in orders)
+        {
+            <tr>
+                <td>User name</td>
+                <td>Product</td>
+                <td>Date</td>
+                <td>Payment</td>
+                <td>Location</td>
+            </tr>
+        }
+    </tbody>
+</table>
