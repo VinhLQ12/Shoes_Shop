@@ -1,9 +1,12 @@
-using Shoes_Shop.Services;
+//using Shoes_Shop.Services;
+
+using Shoes_Shop.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<ShoesShopContext>();
 
 var app = builder.Build();
 
@@ -15,10 +18,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 var services = new ServiceCollection();
-services.AddSingleton<IDatabaseService>();
-services.AddTransient<ProductService>();
+//services.AddSingleton<IDatabaseService>();
+//services.AddTransient<ProductService>();
 
-//var serviceProvider = services.BuildServiceProvider();
+var serviceProvider = services.BuildServiceProvider();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
