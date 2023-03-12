@@ -1,7 +1,9 @@
 //using Shoes_Shop.Services;
 
 using Shoes_Shop.Models;
+
 using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 var services = new ServiceCollection();
+
+
+//services.AddSingleton<IDatabaseService>();
+//services.AddTransient<ProductService>();
+
+
 
 //services.AddSingleton<IDatabaseService>();
 //services.AddTransient<ProductService>();
