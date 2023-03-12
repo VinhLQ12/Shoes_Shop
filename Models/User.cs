@@ -7,6 +7,7 @@ namespace Shoes_Shop.Models
     {
         public User()
         {
+            Carts = new HashSet<Cart>();
             ChatMessageReceivers = new HashSet<ChatMessage>();
             ChatMessageSenders = new HashSet<ChatMessage>();
             Orders = new HashSet<Order>();
@@ -21,6 +22,7 @@ namespace Shoes_Shop.Models
         public string Address { get; set; } = null!;
         public int IsSeller { get; set; }
 
+        public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<ChatMessage> ChatMessageReceivers { get; set; }
         public virtual ICollection<ChatMessage> ChatMessageSenders { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

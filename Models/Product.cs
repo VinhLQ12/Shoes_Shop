@@ -9,6 +9,7 @@ namespace Shoes_Shop.Models
         {
             Carts = new HashSet<Cart>();
             Inventories = new HashSet<Inventory>();
+            OrderDetails = new HashSet<OrderDetail>();
             Reviews = new HashSet<Review>();
             Sales = new HashSet<Sale>();
         }
@@ -23,6 +24,7 @@ namespace Shoes_Shop.Models
         public virtual Category Category { get; set; } = null!;
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Inventory> Inventories { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Sale> Sales { get; set; }
     }

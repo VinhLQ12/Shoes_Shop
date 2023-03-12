@@ -3,11 +3,10 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 
 using Shoes_Shop.Models;
 
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Shoes_Shop.Pages.Admin {
     public class ManageProductModel : PageModel {
@@ -66,6 +65,35 @@ namespace Shoes_Shop.Pages.Admin {
             else
             {
                 db.Products.Remove(product);
+                db.SaveChanges();
+            }
+            return RedirectToPage("./ManageProduct");
+        }
+
+        public IActionResult OnPostUpdateProduct(IFormFile image, string category, string name, string price, string description, int id)
+        {
+            Product product = db.Products.FirstOrDefault(x => x.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                if(image != null)
+                {
+                    string fileName = Path.GetFileName(image.FileName);
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Admin", "ImageProduct", fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        image.CopyTo(stream);
+                    }
+                    product.Image = $"./ImageProduct/{fileName}";
+                }
+
+                product.Name = name;
+                product.Price = Convert.ToDecimal(price);
+                product.Description = description;
+                product.CategoryId = Convert.ToInt32(category);
                 db.SaveChanges();
             }
             return RedirectToPage("./ManageProduct");

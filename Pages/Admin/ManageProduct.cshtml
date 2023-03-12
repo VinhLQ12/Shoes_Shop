@@ -38,10 +38,95 @@
                         <span>@p.Price</span>
                     </td>
                     <td>
-                        <button class="btn btn-danger" onclick="ShowModal(@p.Id,'@p.Name')" data-bs-toggle="modal" data-bs-target="#DeleteProduct">Delete</button>
-                        <button class="btn btn-primary">Update</button>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="@("#DeleteProduct" + p.Id)">Delete</button>
+                        <div class="modal fade" id="@("DeleteProduct" + p.Id)" tabindex="-1" aria-labelledby="DeleteProduct" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" style="max-width: 90%">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="deleteProduct">Confirm to delete product: @p.Name</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img style="width: 100px; height: 100px" src="@p.Image" />
+                                        <p class="modal-title fs-5" id="deleteProduct">@p.Description</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="post" asp-page-handler="DeleteProduct">
+                                            <input id="idDelete" name="id" value="@p.Id" style="display: none" />
+                                            <button class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="@("#UpdateProduct" + p.Id)">Update</button>
+                        <div class="modal fade" id="@("UpdateProduct" + p.Id)" tabindex="-1" aria-labelledby="DeleteProduct" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" style="max-width: 90%">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="deleteProduct">Update product: @p.Name</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form method="post" asp-page-handler="UpdateProduct" enctype="multipart/form-data">
+                                        <div class="modal-body">
+                                            <table>
+                                                <tr>
+                                                    <td>NAME:</td>
+                                                    <td> <input type="text" value="@p.Name" class="form-control" name="name"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>DESCRIPTION:</td>
+                                                    <td> <input type="text" value="@p.Description" class="form-control" name="description"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>PRICE:</td>
+                                                    <td> <input type="number" step=".01" value="@p.Price" class="form-control" name="price"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <img style="width: 100px; height: 100px" src="@p.Image" />
+                                                            <label for="@("IMAGE" + p.Id)" class="col-form-label">Choose Another Image Product:</label>
+                                                            <input type="file" class="form-control" accept="img/*" onchange="previewImage(event)" 
+                                                            name="image" id="@("IMAGE" + p.Id)" style="display: none" />
+                                                        </div>
+                                                    </td>
+
+                                                    <td> <img id="imagePreview" src="#" alt="Preview Image" style="display: none; max-width: 30%;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>CATEGORY:</td>
+                                                    <td>
+                                                        <div>
+                                                            <select name="category">
+                                                                @foreach (Category category in categories)
+                                                                {
+                                                                    if (p.CategoryId == category.CategoryId)
+                                                                    {
+                                                                        <option selected value="@category.CategoryId">@category.CategoryName</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@category.CategoryId">@category.CategoryName</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input name="id" value="@p.Id" style="display: none" />
+                                            <button class="btn btn-danger">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
+
             }
         </tbody>
     </table>
@@ -94,39 +179,20 @@
     </div>
 
     @*Modal Confirm*@
-    <div class="modal fade" id="DeleteProduct" tabindex="-1" aria-labelledby="DeleteProduct" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 90%">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="deleteProduct"></h1>
-                      <form method="post" asp-page-handler="DeleteProduct">
-                          <input id="idDelete" name="id" value="" style="display: none"/>
-                          <button class="btn btn-danger">Delete</button>
-                      </form>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
 
 
 
-    <script>
-        function previewImage(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                var preview = document.getElementById("imagePreview");
-                preview.src = reader.result;
-                preview.style.display = "block";
-            }
-            reader.readAsDataURL(event.target.files[0]);
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var preview = document.getElementById("imagePreview");
+            preview.src = reader.result;
+            preview.style.display = "block";
         }
-        const ShowModal = (id, name) => {
-            document.getElementById("deleteProduct").innerHTML = `Delete Product ${name}`;
-            document.getElementById("idDelete").value = id;
+        reader.readAsDataURL(event.target.files[0]);
+    }
 
-            console.log(id)
-        }
-
-    </script>
+</script>
