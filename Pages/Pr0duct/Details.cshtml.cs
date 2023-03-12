@@ -20,25 +20,20 @@ using Shoes_Shop.Models;
 using System.Text.Json;
 
 
-namespace Shoes_Shop.Pages.Shop
-{
-    public class DetailsModel : PageModel
-    {
+namespace Shoes_Shop.Pages.Shop {
+    public class DetailsModel : PageModel {
 
         private readonly ShoesShopContext db;
-  
+
 
         public DetailsModel(ShoesShopContext _db)
         {
             db = _db;
-        
+
 
         }
 
-
-
         public Product Product { get; set; }
-
 
 
         public IActionResult OnGet(int? id)
@@ -84,93 +79,49 @@ namespace Shoes_Shop.Pages.Shop
 
             var inventory = product.Inventories.FirstOrDefault(i => i.ColorId == colorId && i.SizeId == sizeId);
 
-			Cart existingItem = db.Carts.Where(u=>u.UserId == 1).FirstOrDefault(ci => ci.ProductId == productId && ci.ColorId == colorId && ci.SizeId == sizeId);
+            Cart existingItem = db.Carts.Where(u => u.UserId == 1).FirstOrDefault(ci => ci.ProductId == productId && ci.ColorId == colorId && ci.SizeId == sizeId);
 
-			if (existingItem != null)
-			{
-				// Product is already in the cart, update the quantity
-				existingItem.Quantity += quantity;
+            if (existingItem != null)
+            {
+                // Product is already in the cart, update the quantity
+                existingItem.Quantity += quantity;
                 db.Carts.Update(existingItem);
                 db.SaveChanges();
             }
             else
             {
-				// Create cart item and add to cart
-				var cartItem = new Cart
-				{
-					UserId = 1,
-					ProductId = productId,
-					ColorId = colorId,
-					SizeId = sizeId,
-					Quantity = quantity,
-					DateAdded = DateTime.Now
+                // Create cart item and add to cart
+                var cartItem = new Cart
+                {
+                    UserId = 1,
+                    ProductId = productId,
+                    ColorId = colorId,
+                    SizeId = sizeId,
+                    Quantity = quantity,
+                    DateAdded = DateTime.Now
 
-				};
+                };
 
-				// Get user's cart or create a new cart if it doesn't exist
+                // Get user's cart or create a new cart if it doesn't exist
 
 
-				// Add cart item to cart
-				db.Carts.Add(cartItem);
+                // Add cart item to cart
+                db.Carts.Add(cartItem);
 
-				// Save changes to database
-				db.SaveChanges();
-			}
+                // Save changes to database
+                db.SaveChanges();
+            }
 
-			if (inventory == null || inventory.Quantity < quantity)
+            if (inventory == null || inventory.Quantity < quantity)
             {
                 // Handle out of stock or invalid inventory
                 return RedirectToPage("Index");
             }
-
-            
 
             // Redirect user to cart page
             return RedirectToPage("/Card/List");
         }
 
     }
-
-
-    }
-
-
-
-
-	
-
-
-
-
-		private readonly ShoesShopContext db;
-		public DetailsModel(ShoesShopContext _db)
-		{
-			db = _db;
-		}
-
-
-		public Product product { get; set; }
-
-		public IActionResult OnGet(int ?id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
-			product = db.Products.Include(c=>c.Category).FirstOrDefault(m => m.Id == id);
-			
-	
-
-			if (product == null)
-			{
-				return NotFound();
-			}
-			return Page();
-		}
-
-		
-
-	}
 }
 

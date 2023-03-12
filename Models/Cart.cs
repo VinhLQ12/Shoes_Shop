@@ -16,5 +16,6 @@ namespace Shoes_Shop.Models
         public virtual Color Color { get; set; } = null!;
         public virtual Product Product { get; set; } = null!;
         public virtual Size Size { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
     }
 }
