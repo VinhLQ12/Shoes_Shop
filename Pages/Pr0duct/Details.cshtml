@@ -1,32 +1,78 @@
 ﻿@page "{id:int?}"
 @using Shoes_Shop.Models;
 @model Shoes_Shop.Pages.Shop.DetailsModel
-@{
-    Layout = "./Shared/_Layout1.cshtml";
-}
+
 
 @{
     ViewData["Title"] = "Product Details";
 }
+<div class="wrap-header-cart js-panel-cart">
+    <div class="s-full js-hide-cart"></div>
 
+    <div class="header-cart flex-col-l p-l-65 p-r-25">
+        <div class="header-cart-title flex-w flex-sb-m p-b-8">
+            <span class="mtext-103 cl2">
+                Your Cart
+            </span>
+
+            <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+                <i class="zmdi zmdi-close"></i>
+            </div>
+        </div>
+
+        @if (Model.Carts.Count == 0)
+        {
+            <div>No item into cart!!!</div>
+        }
+        else
+        {
+            <div class="header-cart-content flex-w js-pscroll">
+                <ul class="header-cart-wrapitem w-full">
+
+                    @foreach (var item in Model.Carts)
+                    {
+                        <li class="header-cart-item flex-w flex-t m-b-12">
+                            <div class="header-cart-item-img">
+                                <img src="@item.Product.Image" alt="IMG">
+                            </div>
+
+                            <div class="header-cart-item-txt p-t-8">
+                                <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+                                    @item.Product.Name
+                                </a>
+
+                                <span class="header-cart-item-info">
+                                    @item.Quantity x $@item.Product.Price
+                                </span>
+                            </div>
+                        </li>
+                    }
+
+                </ul>
+
+                <div class="w-full">
+                    <div class="header-cart-total w-full p-tb-40">
+                        Total: $@Model.totalPrice
+                    </div>
+
+                    <div class="header-cart-buttons flex-w w-full">
+                        <a href="/Card/List" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+                            View Cart
+                        </a>
+                        <a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+                            Check Out
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        }
+
+
+    </div>
+</div>
 <!-- breadcrumb -->
 <div class="container">
-    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-        <a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
-            Home
-            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
-        </a>
-
-        <a href="product.html" class="stext-109 cl8 hov-cl1 trans-04">
-            @Model.Product.Category.CategoryName
-            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
-        </a>
-
-        <span class="stext-109 cl4">
-            <span class="stext-109 cl4">
-                @Model.Product.Name
-            </span>
-    </div>
 	<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
 		<a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
 			Home
@@ -48,112 +94,113 @@
 <!-- Product Detail -->
 <section class="sec-product-detail bg0 p-t-65 p-b-60">
     <div class="container">
-       
 
-        
-        <div class="row">
-            <div class="col-md-6 col-lg-7 p-b-30">
-                <div class="p-l-25 p-r-30 p-lr-0-lg">
-                    <div class="wrap-slick3 flex-sb flex-w">
-                        <div class="wrap-slick3-dots"></div>
-                        <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
-                        <div class="slick3 gallery-lb">
-                            <div class="item-slick3" data-thumb="@Model.Product.Image">
-                                <div class="wrap-pic-w pos-relative">
-                                    <img src="@Model.Product.Image" alt="IMG-PRODUCT">
+        <form method="post" asp-page-handler="AddToCart" asp-route-productId="@Model.Product.Id">
+            <input type="hidden" name="productId" value="@Model.Product.Id" />
+            <div class="row">
+                <div class="col-md-6 col-lg-7 p-b-30">
+                    <div class="p-l-25 p-r-30 p-lr-0-lg">
+                        <div class="wrap-slick3 flex-sb flex-w">
+                            <div class="wrap-slick3-dots"></div>
+                            <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
-                                    <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-01.jpg">
-                                        <i class="fa fa-expand"></i>
-                                    </a>
+                            <div class="slick3 gallery-lb">
+                                <div class="item-slick3" data-thumb="@Model.Product.Image">
+                                    <div class="wrap-pic-w pos-relative">
+                                        <img src="@Model.Product.Image" alt="IMG-PRODUCT">
+
+                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-01.jpg">
+                                            <i class="fa fa-expand"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-6 col-lg-5 p-b-30">
-                <div class="p-r-50 p-t-5 p-lr-0-lg">
-                    <h4 class="mtext-105 cl2 js-name-detail p-b-14">
-                        @Model.Product.Name
-                    </h4>
+                <div class="col-md-6 col-lg-5 p-b-30">
+                    <div class="p-r-50 p-t-5 p-lr-0-lg">
+                        <h4 class="mtext-105 cl2 js-name-detail p-b-14">
+                            @Model.Product.Name
+                        </h4>
 
-                    <span class="mtext-106 cl2">
-                        $@Model.Product.Price
-                    </span>
+                        <span class="mtext-106 cl2">
+                            $@Model.Product.Price
+                        </span>
 
-                    <p class="stext-102 cl3 p-t-23">
-                        @Model.Product.Description
-                    </p>
-             
-                    <form method="post" asp-page-handler="AddToCart" asp-route-productId="@Model.Product.Id">
-                        <input type="hidden" name="productId" value="@Model.Product.Id" />
-                    <!--  -->
-                    <div class="p-t-33">
-                        <div class="flex-w flex-r-m p-b-10">
-                            <div class="size-203 flex-c-m respon6">
-                                Color
-                            </div>
-
-                            <div class="size-204 respon6-next">
-                                <div class="rs1-select2 bor8 bg0">
+                        <p class="stext-102 cl3 p-t-23">
+                            @Model.Product.Description
+                        </p>
 
 
-                                    <select name="colorId" id="color-dropdown" style="width: 390px;padding: 9px;border-color:#e6e6e6">
-
-                                        @foreach (var color in Model.Product.Inventories.Select(i => i.Color).Distinct())
-                                        {
-                                                <option value="@color.ColorId">@color.ColorName</option>
-                                        }
-                                    </select>
+                        <!--  -->
+                        <div class="p-t-33">
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 flex-c-m respon6">
+                                    Color
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="flex-w flex-r-m p-b-10">
-                            <div class="size-203 flex-c-m respon6">
-                                Size
-                            </div>
-                            <div class="size-204 respon6-next">
-                                <div class="rs1-select2 bor8 bg0">
-                                        <select name="sizeId" id="size-dropdown" style="width: 390px;padding: 9px;border-color:#e6e6e6">
-                                    </select>
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+
+
+                                        <select name="colorId" id="color-dropdown" style="width: 390px;padding: 9px;border-color:#e6e6e6">
+
+                                            @foreach (var color in Model.Product.Inventories.Select(i => i.Color).Distinct())
+                                            {
+                                                <option value="@color.ColorId">@color.ColorName</option>
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="flex-w flex-r-m p-b-10">
-                                <div class="size-204 flex-w flex-m respon6-next">
-                                    <div class="wrap-num-product flex-w m-r-20 m-tb-10">
-                                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                            <i class="fs-16 zmdi zmdi-minus"></i>
-                                        </div>
-
-                                        <input class="mtext-104 cl3 txt-center num-product" type="number" name="quantity" value="1">
-
-                                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                            <i class="fs-16 zmdi zmdi-plus"></i>
-                                        </div>
+                                <div class="size-203 flex-c-m respon6">
+                                    Size
+                                </div>
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+                                        <select name="sizeId" id="size-dropdown" style="width: 390px;padding: 9px;border-color:#e6e6e6">
+                                        </select>
                                     </div>
+                                </div>
 
-                                    <button type="submit"class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-                                        Add to cart
-                                    </button>
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-204 flex-w flex-m respon6-next">
+                                        <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-minus"></i>
+                                            </div>
+
+                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="quantity" value="1">
+
+                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-plus"></i>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                            Add to cart
+                                        </button>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
 
-                       
+                        </div>
+
                     </div>
-                   
                 </div>
+
+
             </div>
 
-          
-        </div>
-       
+        </form>
+     </div>
 
         
 </section>
@@ -185,20 +232,7 @@
                 });
 
             }
-        });
-
-        //$("form#add-to-cart-form").submit(function (e) {
-        //    e.preventDefault();
-
-        //    // Get the selected color and size.
-        //    var productid = @Model.Product.Id;
-        //    var colorid = $("#color-dropdown option:selected").val();
-        //    var sizeid = $("#size-dropdown option:selected").val();
-
-        //    // Get the quantity to add to the cart.
-        //    var quantity = parseInt($(".num-product").val());
-        //    console.log(productid, colorid, sizeid, quantity);
-     
+        });    
     </script>
 }
 	

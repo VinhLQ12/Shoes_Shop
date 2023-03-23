@@ -1,23 +1,8 @@
-
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Shoes_Shop.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using System.Drawing;
-using System.Text.Json;
-
-
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Shoes_Shop.Models;
-using System.Text.Json;
+
 
 
 namespace Shoes_Shop.Pages.Shop {
@@ -34,11 +19,15 @@ namespace Shoes_Shop.Pages.Shop {
         }
 
         public Product Product { get; set; }
+        [BindProperty]
+		public List<Cart> Carts { get; set; }
+		public double totalPrice { get; set; }
 
-
-        public IActionResult OnGet(int? id)
+		public IActionResult OnGet(int? id)
         {
-            if (id == null)
+	
+			
+			if (id == null)
             {
                 return NotFound();
             }
@@ -54,11 +43,22 @@ namespace Shoes_Shop.Pages.Shop {
             {
                 return NotFound();
             }
+			Carts = db.Carts.Include(c => c.Product).Where(c => c.UserId == 1)
+					   .Select(c => new Cart
+					   {
+						   Product = c.Product,
+						   Quantity = c.Quantity
+					   }).ToList();
+			totalPrice = 0;
+			foreach (var cart in Carts)
+			{
+				totalPrice += (double)cart.Product.Price * cart.Quantity;
+			}
 
 
-
-            return Page();
+			return Page();
         }
+
 
         public JsonResult OnGetGetSizeByColor(int productId, int colorId)
         {
@@ -78,7 +78,11 @@ namespace Shoes_Shop.Pages.Shop {
                 .FirstOrDefault(p => p.Id == productId);
 
             var inventory = product.Inventories.FirstOrDefault(i => i.ColorId == colorId && i.SizeId == sizeId);
-
+            if (inventory == null || inventory.Quantity < quantity)
+            {
+                ViewData["Message"] = "Sorry, the selected color and size are out of stock.";
+                return RedirectToPage("./Index");
+            }
             Cart existingItem = db.Carts.Where(u => u.UserId == 1).FirstOrDefault(ci => ci.ProductId == productId && ci.ColorId == colorId && ci.SizeId == sizeId);
 
             if (existingItem != null)
@@ -112,11 +116,6 @@ namespace Shoes_Shop.Pages.Shop {
                 db.SaveChanges();
             }
 
-            if (inventory == null || inventory.Quantity < quantity)
-            {
-                // Handle out of stock or invalid inventory
-                return RedirectToPage("Index");
-            }
 
             // Redirect user to cart page
             return RedirectToPage("/Card/List");

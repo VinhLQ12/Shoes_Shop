@@ -13,8 +13,9 @@ namespace Shoes_Shop.Pages.Shop {
         }
 
         public int uid = 1;
+		public double totalPrice { get; set; }
 
-        public List<Category> Categories = new List<Category>();
+		public List<Category> Categories = new List<Category>();
         public List<Product> Products = new List<Product>();
         public List<Cart> Carts { get; set; }
 
@@ -29,7 +30,12 @@ namespace Shoes_Shop.Pages.Shop {
                            Product = c.Product,
                            Quantity = c.Quantity
                        }).ToList();
-        }
+			totalPrice = 0;
+			foreach (var cart in Carts)
+			{
+				totalPrice += (double)cart.Product.Price * cart.Quantity;
+			}
+		}
 
     }
 
