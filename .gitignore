@@ -1,0 +1,10 @@
+
+*.dll
+*.pdb
+*.vsidx
+bin
+obj
+.vs/Shoes_Shop/v17
+bin/
+obj/
+.vs/Shoes_Shop/

@@ -1,6 +1,8 @@
 //using Shoes_Shop.Services;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+
 using Shoes_Shop.Models;
 
 using System.Text.Json.Serialization;
@@ -17,18 +19,18 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
 });
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-	.AddCookie(options =>
-	{
-		options.LoginPath = "/Login";
-	});
-
-
-
-
-
-
-
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.LoginPath = "/Login";
+})
+.AddCookie("Admin", options =>
+{
+    options.LoginPath = "/Admin/Login";
+});
 var app = builder.Build();
     
 // Configure the HTTP request pipeline.
@@ -51,9 +53,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
+services.AddAuthentication(options =>
+{
+    options.DefaultScheme = "Admin";
+});
+
 app.MapRazorPages();
+
 
 app.Run();
