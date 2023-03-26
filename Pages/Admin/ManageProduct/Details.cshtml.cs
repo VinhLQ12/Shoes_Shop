@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +11,7 @@ using Shoes_Shop.Models;
 
 namespace Shoes_Shop.Pages.Admin.ManageProduct
 {
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class DetailsModel : PageModel
     {
         private readonly ShoesShopContext _context;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using Shoes_Shop.Models;
 
 namespace Shoes_Shop.Pages.Admin.ManageProduct
 {
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly ShoesShopContext _context;

@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 using Shoes_Shop.Models;
 
-namespace Shoes_Shop.Pages.Admin.ManageOrder
-{
-    public class EditModel : PageModel
-    {
+namespace Shoes_Shop.Pages.Admin.ManageOrder {
+    [Authorize(AuthenticationSchemes = "Admin")]
+    public class EditModel : PageModel {
         private readonly ShoesShopContext _context;
 
         public EditModel(ShoesShopContext context)
@@ -36,7 +38,7 @@ namespace Shoes_Shop.Pages.Admin.ManageOrder
             {
                 return NotFound();
             }
-           ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return Page();
         }
 

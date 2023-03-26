@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Shoes_Shop.Models;
 
 namespace Shoes_Shop.Pages.Admin.ManageProduct
 {
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class EditModel : PageModel
     {
         private readonly ShoesShopContext _context;
